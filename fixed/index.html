@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Wasm — versão CORRIGIDA</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; line-height: 1.5; }
+    h1 { font-size: 1.3rem; }
+    input[type=text] { width: 100%; padding: 8px; font-family: monospace; box-sizing: border-box; }
+    button { padding: 8px 16px; margin-top: 8px; cursor: pointer; }
+    #painel { margin-top: 20px; padding: 16px; border: 2px solid #ccc; border-radius: 8px; }
+    .admin-sim { border-color: #c0392b; background: #fdecea; }
+    .admin-nao { border-color: #27ae60; background: #eafaf1; }
+    #aviso { color: #c0392b; font-size: 0.9rem; min-height: 1.2em; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+    #status { color: #888; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Lab Wasm — versão CORRIGIDA (cópia com limite)</h1>
+  <p>
+    Mesma interface, mas o módulo agora usa <code>strncpy</code> com limite.
+    Além disso, o JS rejeita entradas maiores que 15 caracteres antes mesmo de
+    chamar o Wasm (<strong>defesa em profundidade</strong>). Tente 20 caracteres:
+    <code>is_admin</code> permanece 0.
+  </p>
+
+  <label for="entrada">Nome:</label>
+  <input type="text" id="entrada" placeholder="tente mais de 16 caracteres..." autocomplete="off">
+  <div id="aviso"></div>
+  <div>
+    <button id="btnEnviar" disabled>enviar</button>
+    <button id="btnReset" disabled>reset</button>
+  </div>
+
+  <div id="painel">
+    <div id="status">Carregando módulo Wasm...</div>
+    <div id="resultado" style="display:none;">
+      Comprimento da entrada: <strong id="tamanho">-</strong><br>
+      Valor de <code>is_admin</code>: <strong id="valorAdmin">-</strong><br>
+      Estado: <strong id="estado">-</strong>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="fixed.js"></script>
+</body>
+</html>

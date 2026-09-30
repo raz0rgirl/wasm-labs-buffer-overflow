@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab Wasm — Buffer Overflow na Linear Memory</title>
+  <style>
+    /* Estilo mínimo, só para legibilidade. Nada de framework. */
+    body { font-family: system-ui, sans-serif; max-width: 640px; margin: 40px auto; padding: 0 16px; line-height: 1.5; }
+    h1 { font-size: 1.3rem; }
+    input[type=text] { width: 100%; padding: 8px; font-family: monospace; box-sizing: border-box; }
+    button { padding: 8px 16px; margin-top: 8px; cursor: pointer; }
+    #painel { margin-top: 20px; padding: 16px; border: 2px solid #ccc; border-radius: 8px; }
+    .admin-sim { border-color: #c0392b; background: #fdecea; }
+    .admin-nao { border-color: #27ae60; background: #eafaf1; }
+    code { background: #f0f0f0; padding: 1px 4px; border-radius: 3px; }
+    #status { color: #888; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <h1>Lab Wasm — buffer overflow dentro da linear memory</h1>
+  <p>
+    Digite um nome. Ele é copiado para <code>buf[16]</code> dentro do módulo Wasm
+    com <code>strcpy</code>. Passe de 16 caracteres para transbordar sobre
+    <code>is_admin</code>.
+  </p>
+
+  <label for="entrada">Nome:</label>
+  <input type="text" id="entrada" placeholder="tente digitar mais de 16 caracteres..." autocomplete="off">
+  <div>
+    <button id="btnEnviar" disabled>enviar</button>
+    <button id="btnReset" disabled>reset</button>
+  </div>
+
+  <div id="painel">
+    <div id="status">Carregando módulo Wasm...</div>
+    <div id="resultado" style="display:none;">
+      Comprimento da entrada: <strong id="tamanho">-</strong><br>
+      Valor de <code>is_admin</code>: <strong id="valorAdmin">-</strong><br>
+      Estado: <strong id="estado">-</strong>
+    </div>
+  </div>
+
+  <!--
+    JS movido para app.js (externo) de propósito: assim a CSP "script-src 'self'"
+    libera nosso JavaScript same-origin e bloqueia SÓ o Wasm — deixando a lição
+    da Etapa 3 limpa. app.js define "var Module" ANTES de vuln.js ser carregado.
+  -->
+  <script src="app.js"></script>
+  <script src="vuln/vuln.js"></script>
+</body>
+</html>
