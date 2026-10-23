@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrador (v1) — XSS proposital</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 32px auto; padding: 0 16px; line-height: 1.5; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 6px; white-space: pre-wrap; word-break: break-all; }
+    button { padding: 8px 16px; cursor: pointer; }
+    .box { border: 1px solid #ddd; border-radius: 8px; padding: 12px 16px; margin: 16px 0; }
+    code { background: #eee; padding: 1px 4px; border-radius: 3px; }
+  </style>
+
+  <!--
+    ================================================================
+    XSS REFLETIDO PROPOSITAL E DIDÁTICO.
+    O parâmetro ?msg= da URL é inserido via innerHTML, SEM sanitização.
+    Isso é uma VULNERABILIDADE de propósito, para o lab. NUNCA faça
+    innerHTML com dado de URL em produção.
+    Está no <head> e roda cedo, de modo que um payload (ex.: <img onerror>)
+    se instale ANTES de o usuário clicar em "Rodar SDK".
+    ================================================================
+  -->
+  <script>
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var msg = params.get('msg') || 'Bem-vindo ao integrador!';
+      // SINK VULNERÁVEL: innerHTML com entrada controlada pela URL.
+      document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('saida').innerHTML = msg;
+      });
+    })();
+  </script>
+</head>
+<body>
+  <h1>Integrador — SDK v1 (ingênuo)</h1>
+
+  <div class="box">
+    <strong>Mensagem (vulnerável a XSS):</strong>
+    <div id="saida"></div>
+  </div>
+
+  <div class="box">
+    <p>O SDK só roda quando você clica (instanciação <em>lazy</em> do Wasm):</p>
+    <button id="btn">Rodar SDK (fluxo honesto)</button>
+    <pre id="resultado-sdk">(sem resultado ainda)</pre>
+  </div>
+
+  <p style="color:#888; font-size:.9rem">
+    Teste o XSS abrindo, por exemplo:
+    <code>/integrador.html?msg=&lt;img src=x onerror=alert(1)&gt;</code>
+  </p>
+
+  <!-- Carrega o SDK v1. Ele expõe window.sdk. -->
+  <script src="/sdk/sdk.js"></script>
+  <script>
+    document.getElementById('btn').addEventListener('click', function () {
+      window.sdk.rodar();
+    });
+  </script>
+</body>
+</html>
